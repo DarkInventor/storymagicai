@@ -1,58 +1,33 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { IncomingForm, Files } from 'formidable'
-import fs from 'fs'
-import path from 'path'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
-
-const uploadDir = path.join(process.cwd(), 'public', 'uploads')
-
-// Ensure upload directory exists
-fs.mkdirSync(uploadDir, { recursive: true })
-
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === 'POST') {
-    const form = new IncomingForm({
-      uploadDir,
-      keepExtensions: true,
-      maxFileSize: 50 * 1024 * 1024, // 50MB
-    })
+    res.status(200).json({ message: 'Data received successfully', receivedData: req.body.base64Data });
+    const base64Data = req.body.base64Data;
+    if (base64Data) {
+      // Split the base64 string to get the metadata and the actual base64 data
+      const parts = base64Data.split(';base64,');
+      const imageData = parts[1];
+      const imageBuffer = Buffer.from(imageData, 'base64');
 
-    form.parse(req, (err, fields, files: Files) => {
-      if (err) {
-        console.error('Error parsing the files', err)
-        return res.status(500).json({ message: 'Error parsing the files' })
-      }
 
-      // Handle single file or multiple files
-      const uploadedFiles = files.file;
-      const fileArray = Array.isArray(uploadedFiles) ? uploadedFiles : [uploadedFiles].filter(f => f !== undefined);
-      
-      fileArray.forEach((file) => {
-        if (file && file.originalFilename && file.filepath) {
-          const filePath = path.join(uploadDir, file.originalFilename)
+      // Assuming the use of a file system or a database to store the image
+      // For demonstration, we'll simulate saving the image buffer to a file
+      // const fs = require('fs');
+      // const path = require('path');
+      // const imagePath = path.join( 'image.png'); // Example path and file name
+      // fs.writeFileSync(imagePath, imageBuffer);
 
-          fs.rename(file.filepath, filePath, (err) => {
-            if (err) {
-              console.error('Error moving the file', err)
-              return res.status(500).json({ message: 'Error moving the file' })
-            }
-
-            console.log(`File ${file.originalFilename} uploaded successfully to ${filePath}`)
-          })
-        }
-      })
-
-      res.status(200).json({ message: 'Files uploaded successfully' })
-    })
+      res.status(200).json({ message: 'Image saved successfully' });
+    } else {
+      res.status(400).json({ message: 'No base64 data provided' });
+    }
+    res.status(200).json({ message: 'Data received successfully' });
   } else {
-    res.status(405).json({ message: 'Method not allowed' })
+    res.setHeader('Allow', ['POST']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
-
-export default handler
-
