@@ -14,7 +14,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
   "dependencies": {
-    "@ffmpeg/core": "^0.12.6",
+    "@ffmpeg/core": "^0.9.0",
     "@ffmpeg/util": "^0.12.1",
     "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-label": "^2.1.0",
@@ -35,7 +35,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@ffmpeg/ffmpeg": "^0.12.10",
+    "@ffmpeg/ffmpeg": "^0.9.8",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
     "@types/formidable": "^3.4.5",
     "@types/node": "^17.0.45",
