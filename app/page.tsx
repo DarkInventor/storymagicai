@@ -9,11 +9,11 @@ export default function IndexPage() {
     <section className="container flex flex-col items-center justify-center gap-6 pb-8 pt-6 md:py-10 mx-auto">
       <div className="flex flex-col items-center max-w-[980px] gap-2">
         <h1 className="text-center text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-          Please upload the video <br className="hidden sm:inline" />
-          {/* built with Radix UI and Tailwind CSS. */}
+          Transform Your Videos with StoryMagicAi 
+          {/* leveraging the power of Radix UI and Tailwind CSS. */}
         </h1>
         <p className="text-center max-w-[600px] text-lg text-muted-foreground">
-          StoryMagicAi will analyze the slideshow of photos or any videos. It is built for story narration. 
+        Upload your video, and our AI will turn your words into cool speech.
         </p>
       </div>
       <div className="flex justify-center gap-4">
