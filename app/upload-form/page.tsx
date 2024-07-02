@@ -8,6 +8,7 @@ import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 const UploadForm = () => {
   const [file, setFile] = useState<File | null>(null);
   const [videoText, setVideoText] = useState<string>('');
+  const [voice, setVoice] = useState<string>('Alloy');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -40,6 +41,12 @@ const UploadForm = () => {
     setVideoText(event.target.value);
   };
 
+  const handleVoiceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedVoice = event.target.value.toLowerCase(); // Ensure voice value is in lowercase for API compatibility
+    setVoice(selectedVoice);
+    console.log(`Selected voice: ${selectedVoice}`);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!file) {
@@ -60,11 +67,13 @@ const UploadForm = () => {
         body: JSON.stringify({
           model: "tts-1",
           input: videoText,
-          voice: "alloy",
+          voice: voice, // Directly use the voice state without converting to JSON string
           format: "mp3",
           sample_rate: 48000, // High-quality sample rate for professional-level audio
         }),
       });
+
+      console.log(`Voice sent to OpenAI API: ${voice}`); // Log the voice being passed to OpenAI API
 
       if (!response.ok) {
         throw new Error(`Failed to convert text to speech: ${response.statusText}`);
@@ -140,6 +149,16 @@ const UploadForm = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <Input type="file" accept="video/*" onChange={handleFileChange} className='p-20 font-black' />
+        
+        <select value={voice} onChange={handleVoiceChange} className='mt-2 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black bg-white'>
+          <option value="alloy">Alloy</option>
+          <option value="echo">Echo</option>
+          <option value="fable">Fable</option>
+          <option value="onyx">Onyx</option>
+          <option value="nova">Nova</option>
+          <option value="shimmer">Shimmer</option>
+        </select>
+        
         <Textarea placeholder="Enter text for the video" onChange={handleTextChange} className='mt-2' />
         <Button type="submit" className='mt-2' disabled={isLoading}>{isLoading ? 'Uploading...' : 'Upload'}</Button>
       </form>
